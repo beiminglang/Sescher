@@ -25,7 +25,7 @@ public class SescherApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (!checkDataUpdate())
+        if (!checkDataAvaliable())
         {
 
         }
