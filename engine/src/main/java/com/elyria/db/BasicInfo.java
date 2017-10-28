@@ -17,11 +17,8 @@ public class BasicInfo {
     @ColumnInfo(name = "initial")
     private String initial;
 
-    @ColumnInfo(name = "english_name")
-    private String englishName;
-
-    @ColumnInfo(name = "chinese_name")
-    private  String chineseName;
+    @ColumnInfo(name = "name")
+    private String name;
 
     public int getId() {
         return id;
@@ -39,19 +36,11 @@ public class BasicInfo {
         this.initial = initial;
     }
 
-    public String getEnglishName() {
-        return englishName;
+    public String getName() {
+        return name;
     }
 
-    public void setEnglishName(String englishName) {
-        this.englishName = englishName;
-    }
-
-    public String getChineseName() {
-        return chineseName;
-    }
-
-    public void setChineseName(String chineseName) {
-        this.chineseName = chineseName;
+    public void setName(String name) {
+        this.name = name;
     }
 }
