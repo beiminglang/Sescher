@@ -32,8 +32,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         try {
-            File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/basic_data.xls");
-            List<ExcelInfo> excelInfos = ExcelOperate.importExcel(file);
+            List<ExcelInfo> excelInfos = ExcelOperate.importExcel(getAssets().open("data.xls"));
             Log.d("AAAA", "excel = " + excelInfos);
         } catch (Exception e) {
             e.printStackTrace();

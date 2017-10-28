@@ -17,11 +17,9 @@ public class ExcelOperate {
     /**
      * 导入excel文件，使用绝对路径 * * @param file * @param sheetIndex * @return * @throws IOException
      */
-    public static List<ExcelInfo> importExcel(File file, int sheetIndex) throws IOException {
-        FileInputStream in = null;
+    public static List<ExcelInfo> importExcel(InputStream in, int sheetIndex) throws IOException {
         List<ExcelInfo> result = null;
         try {
-            in = new FileInputStream(file);
             result = new ArrayList<>();
             Workbook wb = new HSSFWorkbook(in);
             Sheet sheet = wb.getSheetAt(sheetIndex);
@@ -43,7 +41,7 @@ public class ExcelOperate {
         return result;
     }
 
-    public static List<ExcelInfo> importExcel(File file) throws IOException {
+    public static List<ExcelInfo> importExcel(InputStream file) throws IOException {
         return importExcel(file, 0);
     }
 }
