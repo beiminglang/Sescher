@@ -5,13 +5,14 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import com.elyria.sescher.R;
 import com.elyria.sescher.adapter.ResultAdapter;
 import com.elyria.sescher.func.bean.Bean;
+import com.elyria.sescher.tools.ToastUtils;
+import com.elyria.sescher.widget.ClearEditText;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ import java.util.List;
  */
 
 public class SearchActivity extends Activity implements Contract.View{
-    private EditText editText;
+    private ClearEditText editText;
     private RecyclerView recyclerView ;
     private SearchPresenter mPresenter;
     private ResultAdapter mAdapter;
@@ -31,8 +32,15 @@ public class SearchActivity extends Activity implements Contract.View{
         setContentView(R.layout.activity_search);
 
         editText = findViewById(R.id.input);
-        editText.addTextChangedListener(watcher);
-
+        editText.setTextChangedCallBack(new ClearEditText.onTextChangedCallBack() {
+            @Override
+            public void onChanged(CharSequence s) {
+                String key = s.toString().trim();
+                if(!TextUtils.isEmpty(key)){
+                    mPresenter.search(s.toString().trim());
+                }
+            }
+        });
         recyclerView = findViewById(R.id.recycler);
         LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(manager);
@@ -74,6 +82,6 @@ public class SearchActivity extends Activity implements Contract.View{
     @Override
     public void showError() {
         mAdapter.setData(null);
-        Toast.makeText(this,"error",Toast.LENGTH_SHORT).show();
+        ToastUtils.showToast(this,"error");
     }
 }
