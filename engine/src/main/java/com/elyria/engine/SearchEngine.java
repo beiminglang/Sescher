@@ -16,4 +16,9 @@ public class SearchEngine {
     public static final SearchEngine getInstance() {
         return Holder.INSTANCE;
     }
+
+    public static void transform(){
+
+
+    }
 }
