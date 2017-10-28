@@ -8,7 +8,7 @@ import android.arch.persistence.room.PrimaryKey;
  * Created by baimi on 2017/10/28.
  */
 
-@Entity(name = "basic_info")
+@Entity(tableName = "basic_info")
 public class BasicInfo {
 
     @PrimaryKey

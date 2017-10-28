@@ -42,7 +42,7 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.Holder>  {
     }
 
     public void setData(List<Bean> result) {
-        if (beanList.size()>0) {
+        if (beanList !=null && beanList.size()>0) {
             beanList.clear();
         }
         beanList = result;
