@@ -2,6 +2,7 @@ package com.elyria.engine;
 
 import android.arch.persistence.room.Room;
 import android.content.Context;
+import android.util.Log;
 
 import com.elyria.db.AppDatabase;
 import com.elyria.db.BasicInfo;
@@ -94,6 +95,7 @@ public class SearchEngine {
                 in.close();
             }
         }
+        Log.d("AAA","result = " + result);
         return result;
     }
 }

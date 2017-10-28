@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
                 String key = s.toString().trim();
                 if (!TextUtils.isEmpty(key)) {
                     mPresenter.search(key);
-                }else{
+                } else {
                     mAdapter.setData(null);
                 }
             }
@@ -85,15 +85,14 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
 
-                ((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(MainActivity.this.getCurrentFocus()
+                ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(MainActivity.this.getCurrentFocus()
                         .getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
                 return false;
             }
         });
-        
-        
-        
+
+
         mPresenter = new SearchPresenter(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int permissionRead = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -102,6 +101,8 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
             } else {
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
             }
+        } else {
+            request();
         }
     }
 
@@ -109,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
         if (!checkDataAvaliable()) {
             ToastUtils.showToast(this, "数据异常");
             sp.edit().clear().apply();
+            progress.setVisibility(View.GONE);
         }
     }
 
@@ -146,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
         }
     }
 
-    private boolean initDatabase(InputStream file) {
+    private void initDatabase(InputStream file, final String md5) {
         final SearchEngine instance = SearchEngine.getInstance();
         try {
             Observable.just(file)
@@ -168,17 +170,18 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
                         @Override
                         public void accept(List<BasicInfo> infos) throws Exception {
                             if (infos != null && infos.size() > 0) {
+                                sp.edit().putString("basic_info_md5", md5).apply();
                                 progress.setVisibility(View.GONE);
                             } else {
+                                sp.edit().clear().apply();
+                                ToastUtils.showToast(mContext, "数据异常");
                                 progress.setVisibility(View.VISIBLE);
                             }
                         }
                     });
-            return true;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
     }
 
     TextWatcher watcher = new TextWatcher() {
@@ -237,42 +240,59 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
         // assets
         InputStream inputStream = null;
         try {
-            inputStream = getAssets().open(BASIC_DATA_NAME);
+
+//            InputStream is = getResources().openRawResource(R.raw.basic_data);
+//            File tempfile = File.createTempFile("tempfile", ".xls", getDir("filez", 0));
+//
+//            FileOutputStream os = new FileOutputStream(tempfile);
+//            byte[] buffer = new byte[1024 * 1024 * 100];
+//            int length = 0;
+//            while ((length = is.read(buffer)) != -1) {
+//                os.write(buffer, 0, length);
+//            }
+//
+//            inputStream = new FileInputStream(tempfile);
+//            AssetFileDescriptor fileDescriptor = getAssets().openFd(BASIC_DATA_NAME);
+//            inputStream = fileDescriptor.createInputStream();
+
+            inputStream = getAssets().open("basic_info.xls");
 
             //sdk md5
             String sdFileMd5 = null;
             if (file.exists()) {
                 if (basicInfoMd5 != null) {
                     sdFileMd5 = getFileMD5(new FileInputStream(file));
-                    if (sdFileMd5 == basicInfoMd5) {
+                    if (basicInfoMd5.equals(sdFileMd5)) {
+                        progress.setVisibility(View.GONE);
                         return true;
                     }
                 }
-                boolean success = initDatabase(new FileInputStream(file));
-                if (success) {
-                    sdFileMd5 = getFileMD5(inputStream);
-                    // 写入md5
-                    sp.edit().putString("basic_info_md5", sdFileMd5).apply();
-                    
-                    
-                    Log.i("-----"," md: "+ sp.getString("basic_info_md5",null));
-                }
-                return success;
+                sdFileMd5 = getFileMD5(inputStream);
+                initDatabase(new FileInputStream(file), sdFileMd5);
+//                Log.d("AAA", "success = " + success);
+//                if (success) {
+//                    // 写入md5
+//                    sp.edit().putString("basic_info_md5", sdFileMd5).apply();
+//                }
+                return true;
             } else {
                 if (basicInfoMd5 == null) {
                     if (inputStream == null) {
                         return false;
                     }
-                    boolean success = initDatabase(inputStream);
-                    if (success) {
-                        sdFileMd5 = getFileMD5(inputStream);
-                        // 写入md5
-                        sp.edit().putString("basic_info_md5", sdFileMd5).apply();
-
-
-                        Log.i("-----"," md: "+ sp.getString("basic_info_md5",null));
-                    }
-                    return success;
+                    sdFileMd5 = getFileMD5(inputStream);
+                    initDatabase(inputStream, sdFileMd5);
+//                    if (success) {
+//                        sdFileMd5 = getFileMD5(inputStream);
+//                        // 写入md5
+//                        sp.edit().putString("basic_info_md5", sdFileMd5).apply();
+//
+//
+//                        Log.i("-----", " md: " + sp.getString("basic_info_md5", null));
+//                    }
+                    return true;
+                } else {
+                    progress.setVisibility(View.GONE);
                 }
             }
         } catch (IOException e) {
@@ -288,5 +308,9 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
         }
 
         return true;
+    }
+
+    public interface Callback {
+        public void onLoadFinsih(boolean success);
     }
 }
