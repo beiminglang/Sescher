@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
-<TextView 
-    android:layout_width="match_parent" 
-    android:layout_height="wrap_content" 
-    android:id="@+id/result"
-    android:textSize="15dp"
-    android:text="result"      
-/>
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+    <TextView
+        android:layout_gravity="center_vertical"
+        android:id="@+id/result"
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="result"
+        android:textSize="15dp"
+    />
+    <View
+        android:layout_width="match_parent" 
+        android:layout_height="2px"
+        android:background="#333333"/>
 </LinearLayout>

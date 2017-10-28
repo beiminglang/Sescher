@@ -17,7 +17,9 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.elyria.db.BasicInfo;
 import com.elyria.engine.SearchEngine;
@@ -67,7 +69,9 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
             public void onChanged(CharSequence s) {
                 String key = s.toString().trim();
                 if (!TextUtils.isEmpty(key)) {
-                    mPresenter.search(s.toString().trim());
+                    mPresenter.search(key);
+                }else{
+                    mAdapter.setData(null);
                 }
             }
         });
@@ -76,6 +80,20 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
         recyclerView.setLayoutManager(manager);
         mAdapter = new ResultAdapter(this, null);
         recyclerView.setAdapter(mAdapter);
+
+        recyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+
+                ((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(MainActivity.this.getCurrentFocus()
+                        .getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+                return false;
+            }
+        });
+        
+        
+        
         mPresenter = new SearchPresenter(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int permissionRead = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
