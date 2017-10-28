@@ -11,6 +11,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import android.util.Log;
+
+import com.elyria.db.BasicInfo;
+import com.elyria.engine.SearchEngine;
+
+import java.io.IOException;
 import java.util.List;
 
 /**

@@ -20,7 +20,10 @@ public interface BasicInfoDao {
     List<BasicInfo> findByInitial(String word);
 
     @Insert
-    void insertAll(BasicInfo... infos);
+    void insert(BasicInfo... infos);
+
+    @Insert
+    void insertAll(List<BasicInfo> infos);
 
     @Delete
     void delete(BasicInfo info);

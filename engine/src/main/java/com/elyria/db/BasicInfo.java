@@ -11,7 +11,7 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity(tableName = "basic_info")
 public class BasicInfo {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int id;
 
     @ColumnInfo(name = "initial")
@@ -42,5 +42,14 @@ public class BasicInfo {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "BasicInfo{" +
+                "id=" + id +
+                ", initial='" + initial + '\'' +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

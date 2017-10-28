@@ -10,15 +10,27 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.elyria.db.BasicInfo;
+import com.elyria.engine.SearchEngine;
 import com.elyria.sescher.func.SearchActivity;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button btn ;
+    Button btn;
     Context mContext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,10 +43,32 @@ public class MainActivity extends AppCompatActivity {
                 mContext.startActivity(new Intent(mContext, SearchActivity.class));
             }
         });
+        final SearchEngine instance = SearchEngine.getInstance();
         try {
-            List<ExcelInfo> excelInfos = ExcelOperate.importExcel(getAssets().open("data.xls"));
-            Log.d("AAAA", "excel = " + excelInfos);
-        } catch (Exception e) {
+            Observable.just(instance.importExcel(getAssets().open("data.xls"))).flatMap(new Function<List<BasicInfo>, ObservableSource<List<BasicInfo>>>() {
+                @Override
+                public ObservableSource<List<BasicInfo>> apply(List<BasicInfo> infos) throws Exception {
+                    instance.initDatabase(getApplicationContext());
+                    instance.clear();
+                    instance.insertAll(infos);
+                    List<BasicInfo> a = instance.search("A");
+                    Log.d("AAA", "aa" + a);
+                    return Observable.just(infos);
+                }
+            })
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<List<BasicInfo>>() {
+                        @Override
+                        public void accept(List<BasicInfo> infos) throws Exception {
+                            if (infos != null && infos.size() > 0) {
+                                Log.d("AAA", "aa = " + infos.size());
+                            }
+
+
+                        }
+                    });
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
