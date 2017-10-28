@@ -1,10 +1,7 @@
 package com.elyria.engine;
 
-import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Room;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.support.v4.content.SharedPreferencesCompat;
 
 import com.elyria.db.AppDatabase;
 import com.elyria.db.BasicInfo;
@@ -70,8 +67,10 @@ public class SearchEngine {
     }
 
     public List<BasicInfo> importExcel(InputStream in) throws IOException {
+//        FileInputStream in = null;
         List<BasicInfo> result = null;
         try {
+//            in = new FileInputStream(file);
             result = new ArrayList<>();
             Workbook wb = new HSSFWorkbook(in);
             Sheet sheet = wb.getSheetAt(0);
@@ -91,7 +90,9 @@ public class SearchEngine {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            in.close();
+            if (in != null) {
+                in.close();
+            }
         }
         return result;
     }

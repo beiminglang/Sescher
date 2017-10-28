@@ -1,6 +1,6 @@
 package com.elyria.sescher.func;
 
-import com.elyria.sescher.func.bean.Bean;
+import com.elyria.db.BasicInfo;
 
 import java.util.List;
 
@@ -11,19 +11,24 @@ import java.util.List;
 public class Contract {
     public interface Presenter {
         void search(String item);
-         void subscribe();
 
-         void unsubscribe();
+        void subscribe();
+
+        void unsubscribe();
     }
-    public interface View{
-        void showData(List<Bean> result);
+
+    public interface View {
+        void showData(List<BasicInfo> result);
+
         void showError();
     }
-    public interface Model{
-        void doSearch(String key,onResultListener listener);
+
+    public interface Model {
+        void doSearch(String key, onResultListener listener);
     }
+
     public interface onResultListener {
-        void onSearchSuccess(List<Bean> result);
+        void onSearchSuccess(List<BasicInfo> result);
 
         void onSearchError(String msg);
 

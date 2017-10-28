@@ -1,66 +1,46 @@
 package com.elyria.sescher.func;
 
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
+import android.util.Log;
 
-import com.elyria.sescher.Constants;
-import com.elyria.sescher.func.bean.Bean;
+import com.elyria.db.BasicInfo;
+import com.elyria.engine.SearchEngine;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by wang.lichen on 2017/10/28.
  */
 
 public class SearchModel implements Contract.Model {
-    
+
     @Override
     public void doSearch(final String key, final Contract.onResultListener listener) {
-        test(key,listener);
-    }
-    
-    
-    private Contract.onResultListener tmpListener;
-    private void  test(final String key, final Contract.onResultListener listener){
-        tmpListener = listener;
-        new Thread(){
+//        test(key,listener);
+        Observable.just(key).map(new Function<String, List<BasicInfo>>() {
             @Override
-            public void run() {
-                super.run();
-                List<Bean> names = new ArrayList<>();
-                Bean item;
-                for (String name: Constants.NAMES){
-                    item = new Bean(name);
-                    names.add(item);
-                }
-
-                List<Bean> result = new ArrayList<>();
-                for( int i =0,size = names.size();i<size;i++){
-                    item = names.get(i);
-                    if (item.getResult().equals(key)) {
-                        result.add(item);
+            public List<BasicInfo> apply(String key) throws Exception {
+                String s = Thread.currentThread().toString();
+                Log.d("AAA", "s3 = " + s);
+                return SearchEngine.getInstance().search(key);
+            }
+        }).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<BasicInfo>>() {
+                    @Override
+                    public void accept(List<BasicInfo> infos) throws Exception {
+                        listener.onSearchSuccess(infos);
                     }
-                }
-                Message msg = handler.obtainMessage();
-                msg.obj = result;
-                handler.sendMessage(msg);
-                
-            }
-        }.start();
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        listener.onSearchError(throwable.getMessage());
+                    }
+                });
     }
-    
-    Handler handler = new Handler(Looper.getMainLooper()){
-        @Override
-        public void dispatchMessage(Message msg) {
-            super.dispatchMessage(msg);
-            List<Bean> result = (List<Bean>) msg.obj;
-            if(result.size()>0){
-                tmpListener.onSearchSuccess(result);
-            }else {
-                tmpListener.onSearchError("查找失败");
-            }
-        }
-    };
 }

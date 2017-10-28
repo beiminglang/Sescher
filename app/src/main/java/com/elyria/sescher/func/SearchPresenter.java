@@ -1,6 +1,6 @@
 package com.elyria.sescher.func;
 
-import com.elyria.sescher.func.bean.Bean;
+import com.elyria.db.BasicInfo;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class SearchPresenter implements Contract.Presenter,Contract.onResultList
 
 
     @Override
-    public void onSearchSuccess(List<Bean> result) {
+    public void onSearchSuccess(List<BasicInfo> result) {
         mView.showData(result);
     }
 
