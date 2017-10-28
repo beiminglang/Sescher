@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        sp = getApplicationContext().getSharedPreferences("info_sp", MODE_PRIVATE);
+        sp = getSharedPreferences("info_sp", MODE_PRIVATE);
         progress = findViewById(R.id.progress);
         mContext = this;
         editText = findViewById(R.id.input);
@@ -252,8 +252,10 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
                 if (success) {
                     sdFileMd5 = getFileMD5(inputStream);
                     // 写入md5
-                    sp.edit().putString("basic_info_md5", sdFileMd5);
-                    sp.edit().commit();
+                    sp.edit().putString("basic_info_md5", sdFileMd5).apply();
+                    
+                    
+                    Log.i("-----"," md: "+ sp.getString("basic_info_md5",null));
                 }
                 return success;
             } else {
@@ -265,8 +267,10 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
                     if (success) {
                         sdFileMd5 = getFileMD5(inputStream);
                         // 写入md5
-                        sp.edit().putString("basic_info_md5", sdFileMd5);
-                        sp.edit().commit();
+                        sp.edit().putString("basic_info_md5", sdFileMd5).apply();
+
+
+                        Log.i("-----"," md: "+ sp.getString("basic_info_md5",null));
                     }
                     return success;
                 }
