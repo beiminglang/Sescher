@@ -156,8 +156,6 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
                         @Override
                         public List<BasicInfo> apply(InputStream inputStream) throws Exception {
                             List<BasicInfo> basicInfos = instance.importExcel(inputStream);
-                            String s = Thread.currentThread().toString();
-                            Log.d("AAA", "s2 = " + s);
                             instance.initDatabase(getApplicationContext());
                             instance.clear();
                             instance.insertAll(basicInfos);
@@ -232,32 +230,11 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
         * 与本地dp里的文件md5做判断，不同则更新数据
         * */
         String basicInfoMd5 = sp.getString("basic_info_md5", null);
-
-        Log.i("------wanglichen:", "sp: basicInfoMd5: " + basicInfoMd5);
         // sd
         File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + BASIC_DATA_NAME);
 
         // assets
-        InputStream inputStream = null;
         try {
-
-//            InputStream is = getResources().openRawResource(R.raw.basic_data);
-//            File tempfile = File.createTempFile("tempfile", ".xls", getDir("filez", 0));
-//
-//            FileOutputStream os = new FileOutputStream(tempfile);
-//            byte[] buffer = new byte[1024 * 1024 * 100];
-//            int length = 0;
-//            while ((length = is.read(buffer)) != -1) {
-//                os.write(buffer, 0, length);
-//            }
-//
-//            inputStream = new FileInputStream(tempfile);
-//            AssetFileDescriptor fileDescriptor = getAssets().openFd(BASIC_DATA_NAME);
-//            inputStream = fileDescriptor.createInputStream();
-
-            inputStream = getAssets().open("basic_info.xls");
-
-            //sdk md5
             String sdFileMd5 = null;
             if (file.exists()) {
                 if (basicInfoMd5 != null) {
@@ -267,29 +244,19 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
                         return true;
                     }
                 }
-                sdFileMd5 = getFileMD5(inputStream);
+                sdFileMd5 = getFileMD5(new FileInputStream(file));
+                if (sdFileMd5 == null) {
+                    return false;
+                }
                 initDatabase(new FileInputStream(file), sdFileMd5);
-//                Log.d("AAA", "success = " + success);
-//                if (success) {
-//                    // 写入md5
-//                    sp.edit().putString("basic_info_md5", sdFileMd5).apply();
-//                }
                 return true;
             } else {
                 if (basicInfoMd5 == null) {
-                    if (inputStream == null) {
+                    sdFileMd5 = getFileMD5(getAssets().open("basic_data.xls"));
+                    if (sdFileMd5 == null) {
                         return false;
                     }
-                    sdFileMd5 = getFileMD5(inputStream);
-                    initDatabase(inputStream, sdFileMd5);
-//                    if (success) {
-//                        sdFileMd5 = getFileMD5(inputStream);
-//                        // 写入md5
-//                        sp.edit().putString("basic_info_md5", sdFileMd5).apply();
-//
-//
-//                        Log.i("-----", " md: " + sp.getString("basic_info_md5", null));
-//                    }
+                    initDatabase(getAssets().open("basic_data.xls"), sdFileMd5);
                     return true;
                 } else {
                     progress.setVisibility(View.GONE);
@@ -298,13 +265,6 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
         } catch (IOException e) {
             e.printStackTrace();
             return false;
-        } finally {
-            try {
-                if (inputStream != null)
-                    inputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
 
         return true;

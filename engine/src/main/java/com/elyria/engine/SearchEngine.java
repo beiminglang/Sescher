@@ -68,10 +68,8 @@ public class SearchEngine {
     }
 
     public List<BasicInfo> importExcel(InputStream in) throws IOException {
-//        FileInputStream in = null;
         List<BasicInfo> result = null;
         try {
-//            in = new FileInputStream(file);
             result = new ArrayList<>();
             Workbook wb = new HSSFWorkbook(in);
             Sheet sheet = wb.getSheetAt(0);

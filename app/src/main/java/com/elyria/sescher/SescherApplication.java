@@ -16,26 +16,6 @@ import java.security.MessageDigest;
 public class SescherApplication extends Application {
 
     public static final String BASIC_DATA_NAME = "basic_data.xls";
-    //private
-
-    public static void writeBytesToFile(InputStream is, File file) throws IOException {
-        FileOutputStream fos = null;
-        try {
-            byte[] data = new byte[2048];
-            int nbread = 0;
-            fos = new FileOutputStream(file);
-            while ((nbread = is.read(data)) > -1) {
-                fos.write(data, 0, nbread);
-            }
-        } catch (Exception e) {
-            // logger.error("Exception",ex);
-            e.printStackTrace();
-        } finally {
-            if (fos != null) {
-                fos.close();
-            }
-        }
-    }
 
     public static String getFileMD5(InputStream in) {
         if (in == null)
