@@ -15,16 +15,12 @@ public interface BasicInfoDao {
     @Query("SELECT * FROM basic_info")
     List<BasicInfo> getAll();
 
-    @Query("SELECT * FROM user WHERE uid IN (:userIds)")
-    List<BasicInfo> loadAllByIds(int[] userIds);
-
-    @Query("SELECT * FROM user WHERE first_name LIKE :first AND "
-            + "last_name LIKE :last LIMIT 1")
-    BasicInfo findByName(String first, String last);
+    @Query("SELECT * FROM basic_info WHERE initial like :initial")
+    List<BasicInfo> findByInitial(String initial);
 
     @Insert
-    void insertAll(BasicInfo... users);
+    void insertAll(BasicInfo... infos);
 
     @Delete
-    void delete(BasicInfo user);
+    void delete(BasicInfo info);
 }
