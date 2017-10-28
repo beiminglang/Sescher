@@ -82,7 +82,7 @@ public class SearchEngine {
                 Cell name = row.getCell(2);
                 if (initial != null && name != null && initial.getCellTypeEnum() != CellType.BLANK && name.getCellTypeEnum() != CellType.BLANK) {
                     BasicInfo info = new BasicInfo();
-                    info.setInitial(initial.getStringCellValue());
+                    info.setInitial(initial.getStringCellValue().toLowerCase());
                     info.setName(name.getStringCellValue());
                     result.add(info);
                 }

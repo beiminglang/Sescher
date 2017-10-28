@@ -22,7 +22,11 @@ public class SearchModel implements Contract.Model {
     @Override
     public void doSearch(final String key, final Contract.onResultListener listener) {
 //        test(key,listener);
-        Observable.just(key).map(new Function<String, List<BasicInfo>>() {
+        String searchKey = "";
+        if (key != null) {
+            searchKey = key.toLowerCase();
+        }
+        Observable.just(searchKey).map(new Function<String, List<BasicInfo>>() {
             @Override
             public List<BasicInfo> apply(String key) throws Exception {
                 String s = Thread.currentThread().toString();
