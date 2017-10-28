@@ -2,6 +2,8 @@ package com.elyria.sescher;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Environment;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -10,6 +12,7 @@ import android.widget.Button;
 
 import com.elyria.sescher.func.SearchActivity;
 
+import java.io.File;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,7 +32,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         try {
-            List<ExcelInfo> excelInfos = ExcelOperate.importExcel(getAssets().open("data.xls"));
+            File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/data.xls");
+            List<ExcelInfo> excelInfos = ExcelOperate.importExcel(file);
             Log.d("AAAA", "excel = " + excelInfos);
         } catch (Exception e) {
             e.printStackTrace();

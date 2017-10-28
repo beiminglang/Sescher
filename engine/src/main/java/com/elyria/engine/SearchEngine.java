@@ -1,5 +1,7 @@
 package com.elyria.engine;
 
+import android.content.Context;
+
 /**
  * Created by jungletian on 2017/10/28.
  */
@@ -17,7 +19,8 @@ public class SearchEngine {
         return Holder.INSTANCE;
     }
 
-    public static void transform(){
+    public void transData(Context context) {
+
 
 
     }

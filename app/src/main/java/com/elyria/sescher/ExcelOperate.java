@@ -1,16 +1,10 @@
 package com.elyria.sescher;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -23,10 +17,12 @@ public class ExcelOperate {
     /**
      * 导入excel文件，使用绝对路径 * * @param file * @param sheetIndex * @return * @throws IOException
      */
-    public static List<ExcelInfo> importExcel(InputStream in, int sheetIndex) throws IOException {
+    public static List<ExcelInfo> importExcel(File file, int sheetIndex) throws IOException {
+        FileInputStream in = null;
         List<ExcelInfo> result = null;
         try {
-            result = new ArrayList<ExcelInfo>();
+            in = new FileInputStream(file);
+            result = new ArrayList<>();
             Workbook wb = new HSSFWorkbook(in);
             Sheet sheet = wb.getSheetAt(sheetIndex);
             for (Row row : sheet) {
@@ -35,14 +31,8 @@ public class ExcelOperate {
                 }
                 ExcelInfo eInfo = new ExcelInfo();
                 eInfo.setIndex(row.getRowNum());
-                Cell cell1 = row.getCell(1);
-                if (cell1 != null) {
-                    eInfo.setIp(cell1.getStringCellValue());
-                }
-                Cell cell = row.getCell(2);
-                if (cell != null) {
-                    eInfo.setCommunity(cell.getStringCellValue());
-                }
+                eInfo.setIp(row.getCell(0).getStringCellValue());
+                eInfo.setCommunity(row.getCell(1).getStringCellValue());
                 result.add(eInfo);
             }
         } catch (Exception e) {
@@ -53,7 +43,7 @@ public class ExcelOperate {
         return result;
     }
 
-    public static List<ExcelInfo> importExcel(InputStream file) throws IOException {
+    public static List<ExcelInfo> importExcel(File file) throws IOException {
         return importExcel(file, 0);
     }
 }
