@@ -16,7 +16,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -156,7 +155,6 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
                         @Override
                         public List<BasicInfo> apply(InputStream inputStream) throws Exception {
                             List<BasicInfo> basicInfos = instance.importExcel(inputStream);
-                            instance.initDatabase(getApplicationContext());
                             instance.clear();
                             instance.insertAll(basicInfos);
                             return basicInfos;
