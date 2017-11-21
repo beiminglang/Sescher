@@ -1,6 +1,22 @@
 apply plugin: 'com.android.application'
 
+/**
+ * 获取签名文件的方法
+ * @return keystore的file对象
+ */
+static def File getKeyStorePath() {
+    return new File("sign/mrocsearcher.jks")
+}
+
 android {
+    signingConfigs {
+        releaseKey {
+            keyAlias 'mrocsearcher'
+            keyPassword 'mrocsearcher2017'
+            storeFile getKeyStorePath()
+            storePassword 'mrocsearcher2017'
+        }
+    }
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.elyria.sescher"
@@ -12,8 +28,12 @@ android {
     }
     buildTypes {
         release {
+            signingConfig signingConfigs.releaseKey
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug{
+            signingConfig signingConfigs.releaseKey
         }
     }
     aaptOptions {
